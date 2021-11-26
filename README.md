@@ -2,8 +2,8 @@
 Testing out Github actions and Bicep functionality. Creating a blob service and uploading a file to the blob service. Authenticating with a SAS token
 
 ## prerequisites: 
-1. Create a service principal in Azure for GitHub actions
-2. Store the service principal json output as a secret in your GitHub repository
+1. Create a service principal in Azure for GitHub actions and store the service principal json output as a secret in your GitHub repository
+    https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#use-the-azure-login-action-with-a-service-principal-secret
 3. change the Expire date for SAS token in Bicep file. param accountSasProperties object > signedExpiry: '2021-11-29T00:00:01Z'
 
 
