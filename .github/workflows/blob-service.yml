@@ -1,0 +1,59 @@
+# Workflow
+
+name: azureblobservice
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  #push:
+   # branches: [ main ]
+  #pull_request:
+   # branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  deployTest:
+    name: Deploy to test environment
+    runs-on: ubuntu-latest
+    env:
+      environmentType: test
+      prefix: crmm   # just a prefix to make the resources unique. Could be anything
+      image: ./image.jpg  # image that will be uploaded to the blob container. Used to test the blob service after it is deployed.
+    steps:
+    # login to Azure with the Github service principal created in Azure AD. Using the same credentials to every job in this workflow for simplisity. 
+    - uses: actions/checkout@v2  #will download the code from the repository to the runner
+    - name: Azure login
+      uses: azure/login@v1.4.0
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}} # service principal stored as Github secret. Manual pre-deployment process. Scope and correct permission is defined in the bicep file
+        enable-AzPSSession: true
+
+    # deploy bicep file
+    - name: Deploy Resource Group, storage account and keyvault
+      uses: Azure/arm-deploy@v1
+      id: storageaccountdeploy #needed to reference outputs in the bicep file that will be used in this workflow
+      with:
+        scope: subscription
+        region: westeurope
+        template: ./main.bicep
+        parameters: 
+          environmentType="${{ env.environmentType }}" 
+          prefix="${{ env.prefix }}"
+        failOnStdErr: false
+    
+    - name: get key vault secrets
+      uses: Azure/get-keyvault-secrets@v1
+      id: GetSecret
+      with:
+        keyvault: "${{ steps.storageaccountdeploy.outputs.keyvaultname}}"
+        secrets: "${{ steps.storageaccountdeploy.outputs.sastokenname}}" 
+
+    - name: copy file to blob container
+      uses: kheiakiyama/install-azcopy-action@v1
+      with:
+        version: 'v10'
+    - run: azcopy_v10 copy "${{ env.image }}" "${{ steps.storageaccountdeploy.outputs.containerurl}}${{ steps.GetSecret.outputs.storagesastoken }}"
