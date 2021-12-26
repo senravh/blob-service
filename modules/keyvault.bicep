@@ -3,7 +3,7 @@
 param environmentType string
 param prefix string
 param storageaccountid string
-param spobjectid string
+//param spobjectid string
 param tags object
 
 @description('The permissions that the SAS will contain. signedExpiry is todays date + 1 hour')
@@ -28,6 +28,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
     tenantId: subscription().tenantId
     softDeleteRetentionInDays: 7
     accessPolicies: [
+      /*
       {
         tenantId: subscription().tenantId
         objectId: spobjectid
@@ -42,6 +43,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
           ]
         }
       }
+      */
     ]
     sku: {
       name: 'standard'
