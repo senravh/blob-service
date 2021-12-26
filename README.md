@@ -15,4 +15,4 @@ Testing out Github actions and Bicep functionality. Creating a blob service and 
 5. Uploads a file to the blob container with the SAS token from the key vault
 
 ## Notes from the field
-The service principal objectID is hardcoded as a variable in the bicep file. Tried to automatically get the service principal object ID, but did not find a way to do it....yet. Investigated how to use PowerShell/Azure cli inside Bicep to accomplish this and tried to use a GitHub azure cli action to do the lookup and pass the value as a parameter into the bicep file.
+The service principal objectID is hardcoded as a parameter in the bicep file. Tried to automatically get the service principal object ID, but did not find a way to do it....yet. Investigated how to use PowerShell/Azure cli inside Bicep to accomplish this and tried to use a GitHub azure cli action to do the lookup and pass the value as a parameter into the bicep file.
