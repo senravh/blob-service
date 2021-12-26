@@ -5,7 +5,7 @@ param prefix string
 param storageaccountid string
 //param spobjectid string
 param tags object
-param todaydate string = utcNow('u')
+param todaydate string = utcNow()
 
 @description('The permissions that the SAS will contain. signedExpiry is todays date + 1 hour')
 param accountSasProperties object = {
