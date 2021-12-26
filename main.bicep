@@ -17,9 +17,6 @@ param prefix string
 @description('Time and date for tracking last deploy time')
 param basetime string = utcNow('yyyy-MM-dd')
 
-//@description('objectID of service principal. prerequisites: manual lookup of objectID in the Azure portal')
-//var spobjectid = '' //manual lookup of service principal objectID in Azure portal. 
-
 @description('tags related to this deployment')
 var tags = {
   'environment': environmentType
@@ -55,7 +52,6 @@ module keyvault 'modules/keyvault.bicep' = {
   params: {
     environmentType: environmentType
     prefix: prefix
-    //spobjectid: spobjectid
     storageaccountid: BlobService.outputs.storageaccountid
     tags: tags
   }
