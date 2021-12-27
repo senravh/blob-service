@@ -17,6 +17,9 @@ param prefix string
 @description('Time and date for tracking last deploy time')
 param basetime string = utcNow('yyyy-MM-dd')
 
+@description('objectId of the serviceprincipal that is deploying the solution. Needs access to list and get the sastoken too upload the file')
+param objectId string
+
 @description('tags related to this deployment')
 var tags = {
   'environment': environmentType
@@ -54,6 +57,7 @@ module keyvault 'modules/keyvault.bicep' = {
     prefix: prefix
     storageaccountid: BlobService.outputs.storageaccountid
     tags: tags
+    objectId: objectId
   }
 }
 

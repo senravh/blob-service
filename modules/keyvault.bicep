@@ -4,14 +4,15 @@ param environmentType string
 param prefix string
 param storageaccountid string
 param tags object
+param objectId string
+
 //param todaydate string = utcNow()
 
-@description('The permissions that the SAS will contain. signedExpiry is todays date + 1 hour')
+@description('The permissions that the SAS will contain')
 param accountSasProperties object = {
   signedServices : 'b'
   signedPermission: 'rwdlacup'
   signedExpiry: '2021-12-29T00:00:01Z'
-  //signedExpiry: todaydate
   signedResourceTypes: 'sco'
 }
 
@@ -28,7 +29,18 @@ resource keyvault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
     enabledForDiskEncryption: true
     tenantId: subscription().tenantId
     softDeleteRetentionInDays: 7
-    accessPolicies: []
+    accessPolicies: [
+      {
+        objectId:objectId
+        tenantId:subscription().tenantId
+        permissions: {
+          secrets: [
+            'list'
+            'get'
+          ]
+        }
+      }
+    ]
     sku: {
       name: 'standard'
       family: 'A'
